@@ -1,6 +1,5 @@
 package com.mentink.hackathon.security.util;
 
-import com.mentink.hackathon.service.RedisUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -16,8 +15,6 @@ import java.util.Map;
 
 @Slf4j
 public class JWTUtil {
-    @Autowired
-    private RedisUtil redisUtil;
 
     private String secretKey = "metinktothemars";
     //토큰 만기일 - 1
@@ -49,9 +46,6 @@ public class JWTUtil {
         tokens.put("token", token);
         tokens.put("refreshToken", refreshToken);
 
-        saveToRedis(content,refreshToken);
-
-
         return tokens;
 
 
@@ -76,8 +70,5 @@ public class JWTUtil {
         return contentValue;
     }
 
-    protected void saveToRedis(String username,String refreshToken) {
-        redisUtil.setData(username+"-refreshToken",refreshToken);
 
-    }
 }

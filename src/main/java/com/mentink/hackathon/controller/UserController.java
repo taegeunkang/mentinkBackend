@@ -58,7 +58,7 @@ public class UserController {
         String userName = body.get("username");
         String password = body.get("password");
         String email = body.get("email");
-        String nickName = body.get("nickName");
+        String nickName = body.get("nickname");
         String gender = body.get("gender");
         String birth = body.get("birth");
         String company = body.get("company");

@@ -63,7 +63,7 @@ public class ApiLoginFilter  extends AbstractAuthenticationProcessingFilter {
         String username = request.getParameter("username");
         String pwd = request.getParameter("password");
         if(username == null || pwd == null) {
-            throw new BadCredentialsException("이메일 또는 비밀번호는 공백일 수 없습니다. ");
+            throw new BadCredentialsException("아이디 또는 비밀번호는 공백일 수 없습니다. ");
         }
 
         UsernamePasswordAuthenticationToken authToken =

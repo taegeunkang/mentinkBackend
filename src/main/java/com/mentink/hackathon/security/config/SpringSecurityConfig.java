@@ -47,6 +47,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                        .antMatchers("/user/login/**").permitAll();
+
         http.csrf().disable();
         http.logout();
         http.rememberMe().tokenValiditySeconds(60*60*7).userDetailsService(userDetailsService());
