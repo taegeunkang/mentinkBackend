@@ -5,8 +5,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Setter
@@ -26,12 +29,17 @@ public class Mentee extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
-
     @Builder
-    private Mentee(String userName, String email, String password) {
+    public Mentee(String userName, String email, String password) {
         this.userName = userName;
         this.email = email;
         this.password = password;
+    }
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<MenteeRole> roleSet = new HashSet<>();
+
+    public void addMemberRole(MenteeRole menteeRole){
+        roleSet.add(menteeRole);
     }
 
 

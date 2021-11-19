@@ -20,7 +20,7 @@ public class MainController {
     }
 
 
-    @GetMapping("/test")
+    @GetMapping("/app/test")
     public String test() {
         return "login successed";
     }

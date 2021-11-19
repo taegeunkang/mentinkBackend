@@ -2,6 +2,7 @@ package com.mentink.hackathon.dto;
 
 
 import com.mentink.hackathon.domain.Mentee;
+import com.mentink.hackathon.domain.MenteeRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,12 @@ public class MenteeDTO {
     }
 
     public Mentee toEntity() {
-        return Mentee.builder()
+        Mentee mentee = Mentee.builder()
                 .userName(userName)
                 .password(password)
                 .email(email)
                 .build();
+        mentee.addMemberRole(MenteeRole.USER);
+        return mentee;
     }
 }

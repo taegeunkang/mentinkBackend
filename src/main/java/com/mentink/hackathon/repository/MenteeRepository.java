@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MenteeRepository extends JpaRepository<Mentee, Long> {
+    Mentee findByUserName(String username);
 }

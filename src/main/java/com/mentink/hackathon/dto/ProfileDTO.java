@@ -17,16 +17,18 @@ public class ProfileDTO {
     private String birth;
     private String company;
     private String job;
+    private Integer year;
     private String school;
     private String major;
 
     public ProfileDTO(String nickName, String gender, String birth
-            , String company, String job, String school, String major) {
+            , String company, String job,Integer year, String school, String major) {
         this.nickName = nickName;
         this.gender = gender;
         this.birth = birth;
         this.company = company;
         this.job = job;
+        this.year = year;
         this.school = school;
         this.major = major;
 
@@ -40,6 +42,7 @@ public class ProfileDTO {
                 .birth(birth)
                 .company(company)
                 .job(job)
+                .year(year)
                 .school(school)
                 .major(major)
                 .mentee(mentee)

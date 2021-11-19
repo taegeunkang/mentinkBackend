@@ -25,6 +25,7 @@ public class Profile {
 
     private String company;
     private String job;
+    private Integer year;
     @Column(nullable = false)
     private String school;
     @Column(nullable = false)
@@ -35,12 +36,13 @@ public class Profile {
 
     @Builder
     private Profile(String nickName, String gender, String birth
-    , String company, String job, String school, String major, Mentee mentee) {
+    , String company, String job,Integer year, String school, String major, Mentee mentee) {
         this.nickName = nickName;
         this.gender = gender;
         this.birth =birth;
         this.company = company;
         this.job = job;
+        this.year = year;
         this.school = school;
         this.major = major;
         this.mentee = mentee;

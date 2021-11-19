@@ -12,9 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -27,12 +25,12 @@ public class UserController {
 
     private final LoginService loginService;
 
-    @PostMapping("/login")
-    public void login() {
+    @GetMapping("/user/login")
+    public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
 
     }
 
-    @PostMapping(value = "/login/register", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/user/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity register(@RequestBody HashMap<String, String> body) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -44,11 +42,12 @@ public class UserController {
         String birth = body.get("birth");
         String company = body.get("company");
         String job = body.get("job");
+        Integer year = Integer.parseInt(body.get("year"));
         String school = body.get("school");
         String major = body.get("major");
 
         MenteeDTO menteeDTO = new MenteeDTO(userName, password, email);
-        ProfileDTO profileDTO = new ProfileDTO(nickName, gender,birth ,company, job, school, major);
+        ProfileDTO profileDTO = new ProfileDTO(nickName, gender,birth ,company, job,year ,school, major);
 
         loginService.signup(menteeDTO, profileDTO);
 
