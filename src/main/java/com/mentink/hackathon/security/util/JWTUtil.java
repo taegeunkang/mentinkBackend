@@ -1,28 +1,61 @@
 package com.mentink.hackathon.security.util;
 
+import com.mentink.hackathon.service.RedisUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
 import io.jsonwebtoken.impl.DefaultJws;
-import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class JWTUtil {
+    @Autowired
+    private RedisUtil redisUtil;
+
     private String secretKey = "metinktothemars";
-    //토큰 만기일
-    private long expire = 60*24*30;
-    //토큰 생성
-    public String generateToken(String content) throws Exception {
+    //토큰 만기일 - 1
+    private long expire = 60*24;
+    //리프레쉬 토큰 만기일일 - 6개월
+    private long refreshTokenExpire = 60*24*30*6;
+    //토큰 갱신
+    public String refresh(String content) throws Exception {
         return Jwts.builder().setIssuedAt(new Date())
                 .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(expire).toInstant()))
                 .claim("sub", content)
                 .signWith(SignatureAlgorithm.HS256, secretKey.getBytes(StandardCharsets.UTF_8))
                 .compact();
+    }
+
+    //토큰 생성
+    public Map<String, String> generateToken(String content) throws Exception {
+        String token = Jwts.builder().setIssuedAt(new Date())
+                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(expire).toInstant()))
+                .claim("sub", content)
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes(StandardCharsets.UTF_8))
+                .compact();
+        String refreshToken = Jwts.builder().setIssuedAt(new Date())
+                .setExpiration(Date.from(ZonedDateTime.now().plusMinutes(refreshTokenExpire).toInstant()))
+                .claim("sub", content)
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes(StandardCharsets.UTF_8))
+                .compact();
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("token", token);
+        tokens.put("refreshToken", refreshToken);
+
+        saveToRedis(content,refreshToken);
+
+
+        return tokens;
+
+
+
     }
 
     public String validateAndExtract(String tokenStr) throws Exception {
@@ -41,5 +74,10 @@ public class JWTUtil {
             contentValue = null;
         }
         return contentValue;
+    }
+
+    protected void saveToRedis(String username,String refreshToken) {
+        redisUtil.setData(username+"-refreshToken",refreshToken);
+
     }
 }
