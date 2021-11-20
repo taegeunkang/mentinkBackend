@@ -1,5 +1,8 @@
 package com.mentink.hackathon.security.util;
 
+import com.mentink.hackathon.domain.Logout;
+import com.mentink.hackathon.repository.LogoutRepository;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;
@@ -12,10 +15,12 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 public class JWTUtil {
-
+    @Autowired
+    private LogoutRepository logoutRepository;
     private String secretKey = "metinktothemars";
     //토큰 만기일 - 1
     private long expire = 60*24;
@@ -48,26 +53,40 @@ public class JWTUtil {
 
         return tokens;
 
+    }
 
+    public Date getExp(String tokenStr) {
 
+        DefaultJws defaultJws = (DefaultJws) Jwts.parser().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                .parseClaimsJws(tokenStr);
+
+        DefaultClaims defaultClaims = (DefaultClaims) defaultJws.getBody();
+        Date exp = defaultClaims.getExpiration();
+
+        return exp;
     }
 
     public String validateAndExtract(String tokenStr) throws Exception {
         String contentValue = null;
+        Optional<Logout> logout = logoutRepository.findByToken(tokenStr);
+        if(!logout.isPresent()) {
+            try {
+                DefaultJws defaultJws = (DefaultJws) Jwts.parser().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
+                        .parseClaimsJws(tokenStr);
 
-        try {
-            DefaultJws defaultJws = (DefaultJws) Jwts.parser().setSigningKey(secretKey.getBytes(StandardCharsets.UTF_8))
-                    .parseClaimsJws(tokenStr);
-
-            DefaultClaims defaultClaims = (DefaultClaims) defaultJws.getBody();
-
-            contentValue = defaultClaims.getSubject();
-        }catch (Exception e) {
-            e.printStackTrace();
-            log.error(e.getMessage());
-            contentValue = null;
+                DefaultClaims defaultClaims = (DefaultClaims) defaultJws.getBody();
+                contentValue = defaultClaims.getSubject();
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+                contentValue = null;
+            }
+            return contentValue;
         }
-        return contentValue;
+        else{
+            log.warn("this token cannot use");
+            return null;
+        }
     }
 
 

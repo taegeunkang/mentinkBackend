@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.awt.*;
+import java.util.Date;
 import java.util.HashMap;
 
 
@@ -31,7 +32,15 @@ public class UserController {
 
     @GetMapping("/user/login")
     public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
+        // 필터에서 처리
+    }
 
+    @GetMapping("/user/logout")
+    public ResponseEntity<String> logout(@RequestParam("token") String token, @RequestParam("refreshToken") String refreshToken) {
+        Date tokenExp = jwtUtil.getExp(token);
+        Date refreshTokenExp = jwtUtil.getExp(refreshToken);
+        loginService.logout(token, refreshToken, tokenExp, refreshTokenExp);
+        return new ResponseEntity("Logout!",HttpStatus.OK);
     }
 
     //토큰 갱신

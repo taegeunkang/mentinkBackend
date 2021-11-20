@@ -38,10 +38,6 @@ public class ApiCheckFilter extends OncePerRequestFilter {
 
         log.info(String.valueOf(antPathMatcher.match(pattern, request.getRequestURI())));
         if(antPathMatcher.match(pattern, request.getRequestURI())) {
-            log.info("ApiCheckFilter Worked!!!");
-            log.info("ApiCheckFilter Worked!!!");
-            log.info("ApiCheckFilter Worked!!!");
-
             boolean checkHeader =checkAuthHeader(request);
 
             if(checkHeader) {
@@ -74,11 +70,9 @@ public class ApiCheckFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")){
-            log.info("Authorization exist : " + authHeader);
-
             try {
                 String username = jwtUtil.validateAndExtract(authHeader.substring(7));
-                checkResult = username.length() > 0;
+                checkResult = username != null;
 
             }catch (Exception e) {
                 e.printStackTrace();
