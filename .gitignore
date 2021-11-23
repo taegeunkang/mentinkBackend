@@ -37,4 +37,3 @@ out/
 .vscode/
 ###이메일 정보###
 src/main/resources/email.properties
-
