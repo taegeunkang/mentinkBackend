@@ -1,9 +1,14 @@
 package com.mentink.hackathon.service;
 
+import com.mentink.hackathon.domain.Mentee;
+import com.mentink.hackathon.domain.MenteeRole;
 import com.mentink.hackathon.domain.Profile;
 import com.mentink.hackathon.domain.ProfileImage;
+import com.mentink.hackathon.dto.MentoDTO;
 import com.mentink.hackathon.dto.ProfileImageDTO;
 import com.mentink.hackathon.dto.ShortProfileDTO;
+import com.mentink.hackathon.repository.MenteeRepository;
+import com.mentink.hackathon.repository.MentoRepository;
 import com.mentink.hackathon.repository.ProfileImageRepository;
 import com.mentink.hackathon.repository.ProfileRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -24,7 +31,8 @@ public class ProfileService {
 
     private final ProfileImageRepository profileImageRepository;
     private final ProfileRepository profileRepository;
-
+    private final MenteeRepository menteeRepository;
+    private final MentoRepository mentoRepository;
 
     public ShortProfileDTO getShortProfile(Long userId) throws IOException {
         ShortProfileDTO shortProfileDTO = new ShortProfileDTO();
@@ -62,9 +70,23 @@ public class ProfileService {
         }
 
     }
+    public Map<String, String> getJobContent(Long userId) {
+        Map<String, String> mp = new HashMap<>();
+        Optional<Profile> profile = profileRepository.findByMenteeId(userId);
+        Optional<Mentee> mentee = menteeRepository.findById(userId);
+        mp.put("company", profile.get().getCompany());
+        mp.put("job", profile.get().getJob());
+        mp.put("email", mentee.get().getEmail());
+
+        return mp;
+    }
 
     public void deleteProfileImage(Long userId) {
         profileImageRepository.deleteByMenteeId(userId);
+
+    }
+    public void setMento(MentoDTO mentoDTO) {
+        mentoRepository.save(mentoDTO.toEntity());
 
     }
 

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 
 @Slf4j
@@ -101,5 +102,19 @@ public class UserController {
         log.info("user : "+ userId + " delete profile Image");
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
+
+    @PostMapping("/user/mento/content")
+    public Map<String, String> getJobInfo(@RequestBody Long userId) {
+        Map<String, String> content = profileService.getJobContent(userId);
+
+        return content;
+    }
+    @PostMapping("/user/mento/register")
+    public ResponseEntity addMento(@RequestBody MentoDTO mentoDTO) {
+        profileService.setMento(mentoDTO);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+
+    }
+
 
 }
