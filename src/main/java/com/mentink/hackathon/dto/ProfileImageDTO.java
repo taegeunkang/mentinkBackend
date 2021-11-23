@@ -12,14 +12,14 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 public class ProfileImageDTO {
-    private Long userid;
+    private Long userId;
     private String path;
     private MultipartFile image;
     private double fileSize;
 
     public ProfileImage toEntity() {
         Mentee mentee = new Mentee();
-        mentee.setId(userid);
+        mentee.setId(userId);
         return ProfileImage.builder().path(path)
                 .filesize(fileSize)
                 .mentee(mentee)

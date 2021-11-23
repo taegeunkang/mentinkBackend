@@ -77,7 +77,7 @@ public class UserController {
 
         loginService.signup(menteeDTO, profileDTO);
 
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
 
     }
 
@@ -90,15 +90,16 @@ public class UserController {
     }
     //프로필 이미지 설정
     @PostMapping("/user/profileImg")
-    public void setProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO) throws IOException {
+    public ResponseEntity setProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO) throws IOException {
             profileService.setProfileImage(profileImageDTO);
-
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/user/profileImg/{userId}")
-    public void deleteProfileImage(@PathVariable("userId") Long userId) {
+    public ResponseEntity deleteProfileImage(@PathVariable("userId") Long userId) {
         profileService.deleteProfileImage(userId);
-
+        log.info("user : "+ userId + " delete profile Image");
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 }

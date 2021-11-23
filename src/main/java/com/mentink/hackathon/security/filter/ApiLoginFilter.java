@@ -53,6 +53,7 @@ public class ApiLoginFilter  extends AbstractAuthenticationProcessingFilter {
             Mentee mentee = menteeRepository.findByUserName(username);
             Long userId = mentee.getId();
             response.setContentType("text/plain");
+            response.setStatus(204);
             response.addHeader("verify-token", token);
             response.addHeader("refresh-token", refreshToken);
             //로그인시 user_id 반환

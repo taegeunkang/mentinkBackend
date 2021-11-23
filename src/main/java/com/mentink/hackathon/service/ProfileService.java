@@ -49,7 +49,7 @@ public class ProfileService {
         profileImageDTO.setFileSize(size);
         if(!file.isEmpty()) {
             String rootPath = FileSystemView.getFileSystemView().getHomeDirectory().toString();
-            String filePath = rootPath+"/mentink/profileImg/"+profileImageDTO.getUserid();
+            String filePath = rootPath+"/mentink/profileImg/"+profileImageDTO.getUserId();
             File dest = new File(filePath);
             if(!dest.exists()) {
                 dest.mkdirs();
