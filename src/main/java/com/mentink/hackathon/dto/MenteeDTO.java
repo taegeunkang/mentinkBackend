@@ -5,7 +5,6 @@ import com.mentink.hackathon.domain.Mentee;
 import com.mentink.hackathon.domain.MenteeRole;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Setter

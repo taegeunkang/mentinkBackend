@@ -1,6 +1,5 @@
 package com.mentink.hackathon.controller;
 
-import com.mentink.hackathon.repository.MenteeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

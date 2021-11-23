@@ -1,14 +1,10 @@
 package com.mentink.hackathon.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mentink.hackathon.domain.Mentee;
-import com.mentink.hackathon.dto.MenteeDTO;
-import com.mentink.hackathon.dto.ProfileDTO;
-import com.mentink.hackathon.dto.RefreshTokenDTO;
+import com.mentink.hackathon.dto.*;
 import com.mentink.hackathon.security.util.JWTUtil;
 import com.mentink.hackathon.service.LoginService;
+import com.mentink.hackathon.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,7 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.*;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -28,11 +24,12 @@ import java.util.HashMap;
 public class UserController {
 
     private final LoginService loginService;
+    private final ProfileService profileService;
     private final JWTUtil jwtUtil;
 
     @GetMapping("/user/login")
     public void login(@RequestParam("username") String username, @RequestParam("password") String password) {
-        // 필터에서 처리
+        //필터에서 처리
     }
 
     @GetMapping("/user/logout")
@@ -61,9 +58,8 @@ public class UserController {
     }
 
     @PostMapping(value = "/user/register", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity register(@RequestBody HashMap<String, String> body) throws JsonProcessingException {
+    public ResponseEntity register(@RequestBody HashMap<String, String> body) {
 
-        ObjectMapper objectMapper = new ObjectMapper();
         String userName = body.get("username");
         String password = body.get("password");
         String email = body.get("email");
@@ -81,8 +77,27 @@ public class UserController {
 
         loginService.signup(menteeDTO, profileDTO);
 
-
         return new ResponseEntity(HttpStatus.OK);
+
+    }
+
+    //프로필 이름, 이미지
+    @PostMapping("/user/profile/short/{userId}")
+    public ShortProfileDTO getShortProfile(@PathVariable("userId") Long userId) throws IOException {
+        ShortProfileDTO shortProfileDTO = profileService.getShortProfile(userId);
+        log.info("user:"+userId+" take shortProfile");
+        return shortProfileDTO;
+    }
+    //프로필 이미지 설정
+    @PostMapping("/user/profileImg")
+    public void setProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO) throws IOException {
+            profileService.setProfileImage(profileImageDTO);
+
+    }
+
+    @DeleteMapping("/user/profileImg/{userId}")
+    public void deleteProfileImage(@PathVariable("userId") Long userId) {
+        profileService.deleteProfileImage(userId);
 
     }
 

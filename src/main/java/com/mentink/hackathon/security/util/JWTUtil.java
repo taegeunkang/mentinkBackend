@@ -2,7 +2,6 @@ package com.mentink.hackathon.security.util;
 
 import com.mentink.hackathon.domain.Logout;
 import com.mentink.hackathon.repository.LogoutRepository;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.impl.DefaultClaims;

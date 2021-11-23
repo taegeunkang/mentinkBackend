@@ -5,15 +5,12 @@ import com.mentink.hackathon.repository.MenteeRepository;
 import com.mentink.hackathon.security.dto.MenteeAuthDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,7 +27,7 @@ public class MenteeUserDetailsService implements UserDetailsService {
 
         Optional<Mentee> result = Optional.ofNullable(menteeRepository.findByUserName(username));
         if(result.isEmpty()) {
-            throw new UsernameNotFoundException("Check usrname or password");
+            throw new UsernameNotFoundException("아이디 또는 비밀번호를 확인하세요.");
         }
 
         Mentee mentee = result.get();

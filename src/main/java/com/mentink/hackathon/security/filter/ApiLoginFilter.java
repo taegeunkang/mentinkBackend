@@ -1,8 +1,11 @@
 package com.mentink.hackathon.security.filter;
 
+import com.mentink.hackathon.domain.Mentee;
+import com.mentink.hackathon.repository.MenteeRepository;
 import com.mentink.hackathon.security.dto.MenteeAuthDTO;
 import com.mentink.hackathon.security.util.JWTUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,6 +23,10 @@ import java.util.Map;
 @Slf4j
 public class ApiLoginFilter  extends AbstractAuthenticationProcessingFilter {
     private JWTUtil jwtUtil;
+
+    @Autowired
+    private MenteeRepository menteeRepository;
+
 
     public ApiLoginFilter(String defaultFilterProcessesUrl, JWTUtil jwtUtil) {
         super(defaultFilterProcessesUrl);
@@ -43,10 +50,13 @@ public class ApiLoginFilter  extends AbstractAuthenticationProcessingFilter {
             Map<String, String> tokens = jwtUtil.generateToken(username);
             token = tokens.get("token");
             refreshToken = tokens.get("refreshToken");
-
+            Mentee mentee = menteeRepository.findByUserName(username);
+            Long userId = mentee.getId();
             response.setContentType("text/plain");
             response.addHeader("verify-token", token);
             response.addHeader("refresh-token", refreshToken);
+            //로그인시 user_id 반환
+            response.addHeader("user-id", String.valueOf(userId));
             response.getOutputStream().write("token issued".getBytes(StandardCharsets.UTF_8));
             log.info(token);
         }catch (Exception e) {

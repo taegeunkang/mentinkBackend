@@ -10,7 +10,6 @@ import com.mentink.hackathon.repository.MenteeRepository;
 import com.mentink.hackathon.repository.ProfileRepository;
 import com.mentink.hackathon.security.util.JWTUtil;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
