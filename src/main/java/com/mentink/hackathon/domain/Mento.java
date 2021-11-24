@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 @Setter
 @Getter
@@ -20,7 +21,6 @@ public class Mento {
     private String content;
     private String preferredLocation;
     private boolean untact;
-
 
     @OneToOne
     private Mentee mentee;

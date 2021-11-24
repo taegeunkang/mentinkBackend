@@ -38,7 +38,7 @@ public class UserController {
         Date tokenExp = jwtUtil.getExp(token);
         Date refreshTokenExp = jwtUtil.getExp(refreshToken);
         loginService.logout(token, refreshToken, tokenExp, refreshTokenExp);
-        return new ResponseEntity("Logout!",HttpStatus.OK);
+        return new ResponseEntity("Logout!",HttpStatus.NO_CONTENT);
     }
 
     //토큰 갱신
@@ -104,13 +104,18 @@ public class UserController {
     }
 
     @PostMapping("/user/mento/content")
-    public Map<String, String> getJobInfo(@RequestBody Long userId) {
+    public Map<String, String> getJobInfo(@RequestBody Map<String, Long> mp) {
+        Long userId = mp.get("userId");
+
         Map<String, String> content = profileService.getJobContent(userId);
 
         return content;
     }
-    @PostMapping("/user/mento/register")
-    public ResponseEntity addMento(@RequestBody MentoDTO mentoDTO) {
+    @GetMapping("/user/mento/register")
+    public ResponseEntity addMento(@RequestParam("userId") Long userId, @RequestParam("content") String content,
+    @RequestParam("preferredLocation") String preferredLocation,@RequestParam("untact") boolean untact ) {
+        MentoDTO mentoDTO = new MentoDTO(userId, content, preferredLocation, untact);
+
         profileService.setMento(mentoDTO);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
 

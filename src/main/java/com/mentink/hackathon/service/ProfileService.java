@@ -1,9 +1,7 @@
 package com.mentink.hackathon.service;
 
-import com.mentink.hackathon.domain.Mentee;
-import com.mentink.hackathon.domain.MenteeRole;
-import com.mentink.hackathon.domain.Profile;
-import com.mentink.hackathon.domain.ProfileImage;
+import com.mentink.hackathon.domain.*;
+import com.mentink.hackathon.dto.MenteeJobInfoDTO;
 import com.mentink.hackathon.dto.MentoDTO;
 import com.mentink.hackathon.dto.ProfileImageDTO;
 import com.mentink.hackathon.dto.ShortProfileDTO;
@@ -20,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,17 +34,23 @@ public class ProfileService {
     private final MentoRepository mentoRepository;
 
     public ShortProfileDTO getShortProfile(Long userId) throws IOException {
-        ShortProfileDTO shortProfileDTO = new ShortProfileDTO();
-        Optional<ProfileImage> profileImage = profileImageRepository.findByMenteeId(userId);
-        Optional<Profile> profile = profileRepository.findByMenteeId(userId);
+        List<Object[] > objects = profileRepository.findProfileInfoShort(userId);
+        Object[] object = objects.get(0);
+        String nickname = String.valueOf(object[0]);
+        String path = String.valueOf(object[1]);
+        Optional<Mento> mento = mentoRepository.findByMenteeId(userId);
+        boolean verified = false;
 
-        String path = profileImage.get().getPath();
+        if(mento.isPresent())
+            verified = true;
+
         // 이미지 반환
         InputStream inputStream = new FileInputStream(path);
         byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
         inputStream.close();
-        shortProfileDTO.setProfileImage(imageToByteArray);
-        shortProfileDTO.setNickName(profile.get().getNickName());
+        ShortProfileDTO shortProfileDTO = ShortProfileDTO.builder().profileImage(imageToByteArray)
+                .nickName(nickname)
+                .verified(verified).build();
 
         return shortProfileDTO;
 
@@ -72,11 +77,14 @@ public class ProfileService {
     }
     public Map<String, String> getJobContent(Long userId) {
         Map<String, String> mp = new HashMap<>();
-        Optional<Profile> profile = profileRepository.findByMenteeId(userId);
-        Optional<Mentee> mentee = menteeRepository.findById(userId);
-        mp.put("company", profile.get().getCompany());
-        mp.put("job", profile.get().getJob());
-        mp.put("email", mentee.get().getEmail());
+        List<Object[]> ob = menteeRepository.findByUserId(userId);
+        Object[] object = ob.get(0);
+        String email = String.valueOf(object[0]);
+        String company = (object[1] != null) ? String.valueOf(object[1]): null;
+        String job = (object[2] != null) ? String.valueOf(object[2]) : null;
+        mp.put("email", email);
+        mp.put("company", company);
+        mp.put("job", job);
 
         return mp;
     }
@@ -86,7 +94,8 @@ public class ProfileService {
 
     }
     public void setMento(MentoDTO mentoDTO) {
-        mentoRepository.save(mentoDTO.toEntity());
+        Mento mt = mentoDTO.toEntity();
+        mentoRepository.save(mt);
 
     }
 
