@@ -1,5 +1,6 @@
 package com.mentink.hackathon.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Setter
 @Getter
@@ -24,6 +26,11 @@ public class Mento {
 
     @OneToOne
     private Mentee mentee;
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mento", fetch = FetchType.LAZY)
+    private List<Matching> matchingList;
 
     @Builder
     private Mento(String content, String preferredLocation, boolean untact, Mentee mentee) {

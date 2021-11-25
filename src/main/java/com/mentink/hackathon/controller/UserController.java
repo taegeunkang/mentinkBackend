@@ -42,7 +42,7 @@ public class UserController {
     }
 
     //토큰 갱신
-    @PostMapping("/user/login/refresh")
+    @PostMapping("/user/refresh")
     public ResponseEntity<String> refreshLogin(@RequestBody RefreshTokenDTO refreshTokenDto) throws Exception {
         String content = jwtUtil.validateAndExtract(refreshTokenDto.getRefreshToken());
         if(content != null && content.equals(refreshTokenDto.getUsername())){
@@ -82,44 +82,7 @@ public class UserController {
 
     }
 
-    //프로필 이름, 이미지
-    @PostMapping("/user/profile/short/{userId}")
-    public ShortProfileDTO getShortProfile(@PathVariable("userId") Long userId) throws IOException {
-        ShortProfileDTO shortProfileDTO = profileService.getShortProfile(userId);
-        log.info("user:"+userId+" take shortProfile");
-        return shortProfileDTO;
-    }
-    //프로필 이미지 설정
-    @PostMapping("/user/profileImg")
-    public ResponseEntity setProfileImage(@ModelAttribute ProfileImageDTO profileImageDTO) throws IOException {
-            profileService.setProfileImage(profileImageDTO);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
 
-    @DeleteMapping("/user/profileImg/{userId}")
-    public ResponseEntity deleteProfileImage(@PathVariable("userId") Long userId) {
-        profileService.deleteProfileImage(userId);
-        log.info("user : "+ userId + " delete profile Image");
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
-    }
-
-    @PostMapping("/user/mento/content")
-    public Map<String, String> getJobInfo(@RequestBody Map<String, Long> mp) {
-        Long userId = mp.get("userId");
-
-        Map<String, String> content = profileService.getJobContent(userId);
-
-        return content;
-    }
-    @GetMapping("/user/mento/register")
-    public ResponseEntity addMento(@RequestParam("userId") Long userId, @RequestParam("content") String content,
-    @RequestParam("preferredLocation") String preferredLocation,@RequestParam("untact") boolean untact ) {
-        MentoDTO mentoDTO = new MentoDTO(userId, content, preferredLocation, untact);
-
-        profileService.setMento(mentoDTO);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
-
-    }
 
 
 }

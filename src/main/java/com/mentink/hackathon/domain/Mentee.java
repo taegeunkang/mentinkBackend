@@ -1,6 +1,7 @@
 package com.mentink.hackathon.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @NoArgsConstructor
@@ -37,6 +39,11 @@ public class Mentee extends BaseTimeEntity {
     }
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<MenteeRole> roleSet = new HashSet<>();
+
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "mentee",fetch = FetchType.LAZY)
+    private List<Matching> matchingList;
 
     public void addMemberRole(MenteeRole menteeRole){
         roleSet.add(menteeRole);
