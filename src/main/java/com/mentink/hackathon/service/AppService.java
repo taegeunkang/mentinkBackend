@@ -16,10 +16,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,7 +40,7 @@ public class AppService {
             String path = String.valueOf(object[1]);
             InputStream inputStream = new FileInputStream(path);
             byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
-            String img = new String(imageToByteArray, StandardCharsets.UTF_8);
+            String img = byteArraytoBase64(imageToByteArray);
             inputStream.close();
             mp.put("id", String.valueOf(objects[0]));
             mp.put("nickName", nickname);
@@ -66,6 +63,10 @@ public class AppService {
     public void setReview(ReviewDTO review) {
         reviewRepository.save(review.toEntity());
         log.info("리뷰 생성");
+    }
+    public String byteArraytoBase64(byte[] img) {
+        String base64Img = Base64.getEncoder().encodeToString(img);
+        return base64Img;
     }
 
     public List<Review> getReview(Long mentoId){
