@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @RequiredArgsConstructor
 public class RefreshTokenDTO {
-    private String username;
+    private Long userId;
     private String refreshToken;
 
 }

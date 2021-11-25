@@ -1,6 +1,7 @@
 package com.mentink.hackathon.controller;
 
 
+import com.mentink.hackathon.domain.Mentee;
 import com.mentink.hackathon.dto.*;
 import com.mentink.hackathon.security.util.JWTUtil;
 import com.mentink.hackathon.service.LoginService;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Slf4j
@@ -44,8 +46,9 @@ public class UserController {
     //토큰 갱신
     @PostMapping("/user/refresh")
     public ResponseEntity<String> refreshLogin(@RequestBody RefreshTokenDTO refreshTokenDto) throws Exception {
-        String content = jwtUtil.validateAndExtract(refreshTokenDto.getRefreshToken());
-        if(content != null && content.equals(refreshTokenDto.getUsername())){
+        Optional<Mentee> mentee = loginService.getUsername(refreshTokenDto.getUserId());
+        String content = jwtUtil.validateAndExtract(mentee.get().getUserName());
+        if(content != null && content.equals(mentee.get().getUserName())){
             String newOne = jwtUtil.refresh(content);
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.    setContentType(new MediaType(MediaType.TEXT_PLAIN));

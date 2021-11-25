@@ -1,20 +1,25 @@
 package com.mentink.hackathon.service;
 
-import com.mentink.hackathon.domain.Mentee;
-import com.mentink.hackathon.domain.Mento;
-import com.mentink.hackathon.domain.Review;
+import com.mentink.hackathon.domain.*;
 import com.mentink.hackathon.dto.MatchingDTO;
 import com.mentink.hackathon.dto.MentoDTO;
+import com.mentink.hackathon.dto.MessageDTO;
 import com.mentink.hackathon.dto.ReviewDTO;
-import com.mentink.hackathon.repository.MatchingRepository;
-import com.mentink.hackathon.repository.MentoRepository;
-import com.mentink.hackathon.repository.ReviewRepository;
+import com.mentink.hackathon.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Service;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,23 +28,35 @@ public class AppService {
     private final MentoRepository mentoRepository;
     private final MatchingRepository matchingRepository;
     private final ReviewRepository reviewRepository;
-
-    public List<Mento> getAllMentos() {
+    private final MessageRepository messageRepository;
+    private final ProfileRepository profileRepository;
+    public List<Map<String, String>> getAllMentos() throws IOException {
         List<Mento> mentolist = new ArrayList<>();
         List<Object[]> mentoes = mentoRepository.findMentoBy();
+
+        List<Map<String, String>> mapList = new ArrayList<>();
         for(Object[] objects : mentoes) {
-            Mentee mt = new Mentee();
-            mt.setId((Long)objects[4]);
-            Mento mento = new Mento();
-            mento.setId((Long)objects[0]);
-            mento.setContent(String.valueOf(objects[1]));
-            mento.setPreferredLocation(String.valueOf(objects[2]));
-            mento.setUntact((boolean)objects[3]);
-            mento.setMentee(mt);
-            mentolist.add(mento);
+            Map<String, String> mp = new HashMap<>();
+            List<Object[] > obj = profileRepository.findProfileInfoShort((Long)objects[0]);
+            Object[] object = obj.get(0);
+            String nickname = String.valueOf(object[0]);
+            String path = String.valueOf(object[1]);
+            InputStream inputStream = new FileInputStream(path);
+            byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
+            String img = new String(imageToByteArray, StandardCharsets.UTF_8);
+            inputStream.close();
+            mp.put("id", String.valueOf(objects[0]));
+            mp.put("nickName", nickname);
+            mp.put("profileImage",img);
+            mp.put("content", String.valueOf(objects[1]));
+            mp.put("preferredLocation", String.valueOf(objects[2]));
+            mp.put("untact", String.valueOf((boolean)objects[3]));
+            mp.put("mentee_id", String.valueOf(objects[4]));
+
+            mapList.add(mp);
         };
         log.info("모든 멘토 목록 출력");
-        return mentolist;
+        return mapList;
     }
 
     public void setMatching(MatchingDTO matching){
@@ -62,5 +79,13 @@ public class AppService {
             lists.add(review);
         }
         return lists;
+    }
+    public List<Object[]> setMessage(MessageDTO messageDTO) {
+        messageRepository.save(messageDTO.toEntity());
+        Matching matching = new Matching();
+        matching.setId(messageDTO.getMatchingId());
+        List<Object[]> messageList = messageRepository.findByMatching(matching);
+        return messageList;
+
     }
 }

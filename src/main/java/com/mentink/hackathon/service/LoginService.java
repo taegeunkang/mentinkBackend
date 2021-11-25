@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +38,9 @@ public class LoginService {
         log.info("username("+menteeDTO.getUserName()+") is signed up");
 
     }
-
+    public Optional<Mentee> getUsername(Long userId) {
+        return menteeRepository.findById(userId);
+    }
     public void logout(String token, String refreshToken,Date tokenExp, Date refreshTokenExp) {
         Logout logout = Logout.builder().token(token).expireDate(tokenExp).build();
         Logout logout1 = Logout.builder().token(refreshToken).expireDate(refreshTokenExp).build();
