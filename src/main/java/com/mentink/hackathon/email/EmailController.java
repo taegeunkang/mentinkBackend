@@ -1,5 +1,6 @@
 package com.mentink.hackathon.email;
 
+import com.mentink.hackathon.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class EmailController {
 
     private final EmailService emailService;
+    private final ProfileService profileService;
 
     @PostMapping("/verify/email") // 이메일 인증 코드 보내기
     public ResponseEntity emailAuth(@RequestBody Map<String, String> email) throws Exception {
@@ -26,8 +28,10 @@ public class EmailController {
 
     @PostMapping("/verify/verifycode") // 이메일 인증 코드 검증
     public ResponseEntity verifyCode(@RequestBody Map<String, String> code) {
+        Long userId = Long.parseLong(code.get("userId"));
         if(EmailService.ePw.equals(code.get("code"))) {
             log.info("코드 인증 성공");
+            profileService.setVerified(userId);
             return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
         else{
