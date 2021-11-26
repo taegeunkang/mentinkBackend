@@ -5,10 +5,7 @@ import com.mentink.hackathon.dto.MenteeJobInfoDTO;
 import com.mentink.hackathon.dto.MentoDTO;
 import com.mentink.hackathon.dto.ProfileImageDTO;
 import com.mentink.hackathon.dto.ShortProfileDTO;
-import com.mentink.hackathon.repository.MenteeRepository;
-import com.mentink.hackathon.repository.MentoRepository;
-import com.mentink.hackathon.repository.ProfileImageRepository;
-import com.mentink.hackathon.repository.ProfileRepository;
+import com.mentink.hackathon.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -17,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.swing.filechooser.FileSystemView;
 import java.io.*;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 
 @Slf4j
@@ -30,6 +24,7 @@ public class ProfileService {
 
     private final ProfileImageRepository profileImageRepository;
     private final ProfileRepository profileRepository;
+    private final ReviewRepository reviewRepository;
     private final MenteeRepository menteeRepository;
     private final MentoRepository mentoRepository;
 
@@ -38,12 +33,7 @@ public class ProfileService {
         Object[] object = objects.get(0);
         String nickname = String.valueOf(object[0]);
         String path = String.valueOf(object[1]);
-        Optional<Mento> mento = mentoRepository.findByMenteeId(userId);
-        boolean verified = false;
-
-        if(mento.isPresent())
-            verified = true;
-
+        boolean verified = (boolean)object[2];
         // 이미지 반환
         InputStream inputStream = new FileInputStream(path);
         byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
@@ -54,6 +44,22 @@ public class ProfileService {
 
         return shortProfileDTO;
 
+    }
+
+    public List<Map<String, String>> getRecommendMentores() {
+        List<Map<String, String>> mapList =new ArrayList<>();
+        List<Object []> objects = reviewRepository.getMentoesOrderByRating();
+        objects.stream().forEach(objects1 -> {
+            Map<String, String> mp = new HashMap<>();
+            mp.put("mentoId", String.valueOf(objects1[0]));
+            mp.put("rating", String.valueOf(objects1[1]));
+            mp.put("preferredLocation", String.valueOf(objects1[2]));
+            mp.put("content", String.valueOf(objects1[3]));
+            mp.put("untact", String.valueOf(objects1[4]));
+            mapList.add(mp);
+        });
+
+        return mapList;
     }
 
     public void setProfileImage(ProfileImageDTO profileImageDTO) throws IOException {

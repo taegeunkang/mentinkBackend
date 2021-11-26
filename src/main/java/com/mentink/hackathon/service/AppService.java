@@ -27,7 +27,7 @@ public class AppService {
     private final ReviewRepository reviewRepository;
     private final MessageRepository messageRepository;
     private final ProfileRepository profileRepository;
-    public List<Map<String, String>> getAllMentos() throws IOException {
+    public List<Map<String, String>> getAllMentores() throws IOException {
         List<Mento> mentolist = new ArrayList<>();
         List<Object[]> mentoes = mentoRepository.findMentoBy();
 
@@ -42,6 +42,7 @@ public class AppService {
             byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
             String img = byteArraytoBase64(imageToByteArray);
             inputStream.close();
+            String rating = getReviewAvg(Long.parseLong(String.valueOf(objects[0])));
             mp.put("id", String.valueOf(objects[0]));
             mp.put("nickName", nickname);
             mp.put("profileImage",img);
@@ -49,11 +50,36 @@ public class AppService {
             mp.put("preferredLocation", String.valueOf(objects[2]));
             mp.put("untact", String.valueOf((boolean)objects[3]));
             mp.put("mentee_id", String.valueOf(objects[4]));
+            mp.put("rating", rating);
 
             mapList.add(mp);
         };
         log.info("모든 멘토 목록 출력");
         return mapList;
+    }
+    public List<Map<String, String>> getSchedule(Long menteeId) throws IOException {
+        List<Map<String, String>> mapList = new ArrayList<>();
+        List<Object[]> objects = matchingRepository.findSchedule(menteeId);
+        for(Object[] obj: objects){
+            Map<String, String> mp = new HashMap<>();
+            String path = String.valueOf(obj[6]);
+            InputStream inputStream = new FileInputStream(path);
+            byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
+            String img = byteArraytoBase64(imageToByteArray);
+            inputStream.close();
+
+            mp.put("appointmentTime", String.valueOf(obj[0]));
+            mp.put("location",String.valueOf(obj[1]));
+            mp.put("nickName", String.valueOf(obj[2]));
+            mp.put("company", String.valueOf(obj[3]));
+            mp.put("job", String.valueOf(obj[4]));
+            mp.put("untact", String.valueOf(obj[5]));
+            mp.put("profileImage", img);
+            mapList.add(mp);
+        }
+
+        return mapList;
+
     }
 
     public void setMatching(MatchingDTO matching){
@@ -63,6 +89,12 @@ public class AppService {
     public void setReview(ReviewDTO review) {
         reviewRepository.save(review.toEntity());
         log.info("리뷰 생성");
+    }
+    public String getReviewAvg(Long mentoId) {
+        List<Object[]> objects = reviewRepository.getReviewRating(mentoId);
+        Object[] obj = objects.get(0);
+        double rating = Double.parseDouble(String.valueOf(obj[1]));
+        return String.format("%.2f", rating);
     }
     public String byteArraytoBase64(byte[] img) {
         String base64Img = Base64.getEncoder().encodeToString(img);

@@ -19,9 +19,9 @@ public class Matching extends BaseTimeEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Mentee mentee;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Mento mento;
 
     private String location;

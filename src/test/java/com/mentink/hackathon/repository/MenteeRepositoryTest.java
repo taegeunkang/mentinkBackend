@@ -36,6 +36,7 @@ class MenteeRepositoryTest {
     public void 테스트() {
 //        List<Object[]> objects = menteeRepository.findByUserId(4L);
 //        System.out.println(objects.get(0));
+        System.out.println("hihi");
 
     }
 

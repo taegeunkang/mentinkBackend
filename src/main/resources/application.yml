@@ -12,6 +12,23 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+  mail:
+    default-encoding: utf-8
+    host: smtp.gmail.com
+    port: 587
+    username: pregea@gmail.com
+    password: 
+    properties:
+      mail:
+        smtp:
+          starttls:
+            enable: true
+            required: true
+          auth: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
 
 server:
   port: 8752

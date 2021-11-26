@@ -31,11 +31,13 @@ public class Mentee extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
+
     @Builder
-    public Mentee(String userName, String email, String password) {
+    public Mentee(String userName, String email ,String password) {
         this.userName = userName;
         this.email = email;
         this.password = password;
+
     }
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<MenteeRole> roleSet = new HashSet<>();

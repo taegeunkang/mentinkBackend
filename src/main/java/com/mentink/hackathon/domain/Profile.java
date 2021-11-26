@@ -31,12 +31,16 @@ public class Profile {
     @Column(nullable = false)
     private String major;
 
+    private boolean verified;
+
+
     @OneToOne
     private Mentee mentee;
 
     @Builder
     private Profile(String nickName, String gender, String birth
-    , String company, String job,Integer year, String school, String major, Mentee mentee) {
+    , String company, String job,Integer year, String school, String major, Mentee mentee
+    ,boolean verified) {
         this.nickName = nickName;
         this.gender = gender;
         this.birth =birth;
@@ -46,6 +50,7 @@ public class Profile {
         this.school = school;
         this.major = major;
         this.mentee = mentee;
+        this.verified = verified;
     }
 
 }

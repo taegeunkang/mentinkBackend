@@ -9,6 +9,7 @@ import com.mentink.hackathon.dto.MentoDTO;
 import com.mentink.hackathon.dto.MessageDTO;
 import com.mentink.hackathon.dto.ReviewDTO;
 import com.mentink.hackathon.service.AppService;
+import com.mentink.hackathon.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ import java.util.Map;
 @RestController
 public class MainController {
     private final AppService appService;
-
+    private final ProfileService profileService;
 
     @GetMapping("test")
     public String test() {
@@ -37,8 +38,8 @@ public class MainController {
     }
 
     @PostMapping("/mentolist")
-    public List<Map<String, String>> getMentoes() throws IOException {
-        return appService.getAllMentos();
+    public List<Map<String, String>> getMentores() throws IOException {
+        return appService.getAllMentores();
     }
 
     @PostMapping("/matching")
@@ -74,6 +75,22 @@ public class MainController {
         }
         return maplist;
     }
+
+    @PostMapping("/home/recommend")
+    public List<Map<String, String>> getRecommendMentores() {
+        log.info("추천 멘토");
+        return profileService.getRecommendMentores();
+
+    }
+
+    @GetMapping("/home/schedule/{userId}")
+    public List<Map<String, String>> getSchedule(@PathVariable("userId") Long userId) throws IOException {
+        log.info("멘토링 일정");
+        return appService.getSchedule(userId);
+
+    }
+
+
 
 
 }
