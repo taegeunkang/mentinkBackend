@@ -12,11 +12,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class ShortProfileDTO {
 
     private String nickName;
-    private byte[] profileImage;
+    private String profileImage;
     private boolean verified;
 
     @Builder
-    private ShortProfileDTO(String nickName, byte[] profileImage, boolean verified){
+    private ShortProfileDTO(String nickName, String profileImage, boolean verified){
         this.nickName = nickName;
         this.profileImage = profileImage;
         this.verified = verified;

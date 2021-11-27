@@ -29,6 +29,8 @@ public class ProfileService {
     private final MenteeRepository menteeRepository;
     private final MentoRepository mentoRepository;
 
+    private final AppService appService;
+
     public ShortProfileDTO getShortProfile(Long userId) throws IOException {
         List<Object[] > objects = profileRepository.findProfileInfoShort(userId);
         Object[] object = objects.get(0);
@@ -38,8 +40,9 @@ public class ProfileService {
         // 이미지 반환
         InputStream inputStream = new FileInputStream(path);
         byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
+        String img = appService.byteArraytoBase64(imageToByteArray);
         inputStream.close();
-        ShortProfileDTO shortProfileDTO = ShortProfileDTO.builder().profileImage(imageToByteArray)
+        ShortProfileDTO shortProfileDTO = ShortProfileDTO.builder().profileImage(img)
                 .nickName(nickname)
                 .verified(verified).build();
 
@@ -52,11 +55,32 @@ public class ProfileService {
         List<Object []> objects = reviewRepository.getMentoesOrderByRating();
         objects.stream().forEach(objects1 -> {
             Map<String, String> mp = new HashMap<>();
+            Long userId = Long.parseLong(String.valueOf(objects1[5]));
+            List<Object[]> objects2 = profileRepository.findProfileInfoShort(userId);
+            Object[] profile = objects2.get(0);
+            String nickName = String.valueOf(profile[0]);
+            String path = String.valueOf(profile[1]);
+            String job = String.valueOf(profile[3]);
+            String year = String.valueOf(profile[4]);
+            String img = "";
+            try {
+                InputStream inputStream = new FileInputStream(path);
+                byte[] imageToByteArray = IOUtils.toByteArray(inputStream);
+                img = appService.byteArraytoBase64(imageToByteArray);
+                inputStream.close();
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+
             mp.put("mentoId", String.valueOf(objects1[0]));
             mp.put("rating", String.format("%.2f", Double.parseDouble(String.valueOf(objects1[1]))));
             mp.put("preferredLocation", String.valueOf(objects1[2]));
             mp.put("content", String.valueOf(objects1[3]));
             mp.put("untact", String.valueOf(objects1[4]));
+            mp.put("nickName", nickName);
+            mp.put("job", job);
+            mp.put("year", year);
+            mp.put("profileImage", img);
             mapList.add(mp);
         });
 
