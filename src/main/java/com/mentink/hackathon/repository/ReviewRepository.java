@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    @Query("select r.id, r.content, r.rating, r.matching from Review r where r.mento.id= ?1 ")
+    @Query(value = "select r.id, r.content, r.rating, r.matching_id, p.nick_name from review r join profile p on r.mentee_id = p.mentee_id where r.mento_id= ?1 ", nativeQuery = true)
     List<Object[]> findReviewByMentoId(Long mentoId);
     @Query(value = "select mento_id, avg(rating) from review where mento_id = ?1 group by mento_id", nativeQuery = true)
     List<Object[]> getReviewRating(Long mentoId);

@@ -76,6 +76,8 @@ public class AppService {
             mp.put("untact", String.valueOf(obj[5]));
             mp.put("profileImage", img);
             mp.put("year", String.valueOf(obj[7]));
+            mp.put("matchingId", String.valueOf(obj[8]));
+            mp.put("mentoId", String.valueOf(obj[9]));
             mapList.add(mp);
         }
 
@@ -110,15 +112,17 @@ public class AppService {
         return base64Img;
     }
 
-    public List<Review> getReview(Long mentoId){
-        List<Review> lists = new ArrayList<>();
+    public List<Map<String, String>> getReview(Long mentoId){
+        List<Map<String, String>> lists = new ArrayList<>();
         List<Object[]> objects = reviewRepository.findReviewByMentoId(mentoId);
         for(Object[] objects1 : objects) {
-            Review review = new Review();
-            review.setId((Long)objects1[0]);
-            review.setContent(String.valueOf(objects1[1]));
-            review.setRating((Integer)objects1[2]);
-            lists.add(review);
+            Map<String, String> mp = new HashMap<>();
+            mp.put("reviewId", String.valueOf(objects1[0]));
+            mp.put("content", String.valueOf(objects1[1]));
+            mp.put("rating", String.valueOf(objects1[2]));
+            mp.put("matchingId", String.valueOf(objects1[3]));
+            mp.put("nickName", String.valueOf(objects1[4]));
+            lists.add(mp);
         }
         return lists;
     }

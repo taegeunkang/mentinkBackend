@@ -54,7 +54,7 @@ public class MainController {
     }
 
     @PostMapping("/matching/review/{mentoId}")
-    public List<Review> getRiview(@PathVariable("mentoId") Long mentoId) {
+    public List<Map<String, String>> getRiview(@PathVariable("mentoId") Long mentoId) {
         return appService.getReview(mentoId);
     }
 
