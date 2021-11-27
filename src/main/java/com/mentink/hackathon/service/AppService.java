@@ -75,6 +75,7 @@ public class AppService {
             mp.put("job", String.valueOf(obj[4]));
             mp.put("untact", String.valueOf(obj[5]));
             mp.put("profileImage", img);
+            mp.put("year", String.valueOf(obj[7]));
             mapList.add(mp);
         }
 
