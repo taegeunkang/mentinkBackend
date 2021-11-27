@@ -53,7 +53,7 @@ public class ProfileService {
         objects.stream().forEach(objects1 -> {
             Map<String, String> mp = new HashMap<>();
             mp.put("mentoId", String.valueOf(objects1[0]));
-            mp.put("rating", String.valueOf(objects1[1]));
+            mp.put("rating", String.format("%.2f", Double.parseDouble(String.valueOf(objects1[1]))));
             mp.put("preferredLocation", String.valueOf(objects1[2]));
             mp.put("content", String.valueOf(objects1[3]));
             mp.put("untact", String.valueOf(objects1[4]));
