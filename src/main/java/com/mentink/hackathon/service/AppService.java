@@ -92,9 +92,17 @@ public class AppService {
     }
     public String getReviewAvg(Long mentoId) {
         List<Object[]> objects = reviewRepository.getReviewRating(mentoId);
-        Object[] obj = objects.get(0);
-        double rating = Double.parseDouble(String.valueOf(obj[1]));
+        double rating;
+
+        if(objects.size() == 0){
+            rating = 0;
+
+        }else{
+            Object[] obj = objects.get(0);
+            rating = Double.parseDouble(String.valueOf(obj[1]));
+        }
         return String.format("%.2f", rating);
+
     }
     public String byteArraytoBase64(byte[] img) {
         String base64Img = Base64.getEncoder().encodeToString(img);
