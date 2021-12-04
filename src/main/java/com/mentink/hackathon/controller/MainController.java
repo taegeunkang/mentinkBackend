@@ -4,11 +4,9 @@ import com.mentink.hackathon.domain.Mentee;
 import com.mentink.hackathon.domain.Mento;
 import com.mentink.hackathon.domain.Message;
 import com.mentink.hackathon.domain.Review;
-import com.mentink.hackathon.dto.MatchingDTO;
-import com.mentink.hackathon.dto.MentoDTO;
-import com.mentink.hackathon.dto.MessageDTO;
-import com.mentink.hackathon.dto.ReviewDTO;
+import com.mentink.hackathon.dto.*;
 import com.mentink.hackathon.service.AppService;
+import com.mentink.hackathon.service.CommunityService;
 import com.mentink.hackathon.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +29,7 @@ import java.util.Map;
 public class MainController {
     private final AppService appService;
     private final ProfileService profileService;
+    private final CommunityService communityService;
 
     @GetMapping("test")
     public String test() {
@@ -88,6 +87,20 @@ public class MainController {
         log.info("멘토링 일정");
         return appService.getSchedule(userId);
 
+    }
+
+    // 커뮤니티 글쓰기
+    @PostMapping("/community/write")
+    public ResponseEntity writeBoard(@RequestBody BoardDTO boardDTO) throws IOException {
+        communityService.write(boardDTO);
+
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/community/comment/write")
+    public ResponseEntity writeComment(@RequestBody CommentDTO commentDTO) {
+        communityService.commentWrite(commentDTO);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
 
