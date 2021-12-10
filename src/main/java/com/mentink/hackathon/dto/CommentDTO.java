@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CommentDTO {
-    private Long writer;
+    private Long writerId;
     private Long boardId;
     private String content;
 
@@ -18,7 +18,7 @@ public class CommentDTO {
         Board board = new Board();
         board.setId(boardId);
         Mentee mentee = new Mentee();
-        mentee.setId(writer);
+        mentee.setId(writerId);
 
         return Comment.builder().content(content).writer(mentee)
                 .board(board)

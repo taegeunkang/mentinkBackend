@@ -91,7 +91,7 @@ public class MainController {
 
     // 커뮤니티 글쓰기
     @PostMapping("/community/write")
-    public ResponseEntity writeBoard(@RequestBody BoardDTO boardDTO) throws IOException {
+    public ResponseEntity writeBoard(BoardDTO boardDTO) throws IOException {
         communityService.write(boardDTO);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);

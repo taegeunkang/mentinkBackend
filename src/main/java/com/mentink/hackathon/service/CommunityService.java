@@ -16,8 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.swing.filechooser.FileSystemView;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Slf4j
@@ -33,8 +32,10 @@ public class CommunityService {
         Board board = boardDTO.toEntity();
         Optional<Board> board1 = Optional.of(boardRepository.save(board));
         Long boardId = board1.get().getId();
-        List<MultipartFile> images  = boardDTO.getImages();
-        saveImage(images, boardId);
+        if(boardDTO.getImages() != null) {
+            List<MultipartFile> images = boardDTO.getImages();
+            saveImage(images, boardId);
+        }
 
     }
     public void saveImage(List<MultipartFile> images, Long boardId) throws IOException {
@@ -68,5 +69,20 @@ public class CommunityService {
         Comment comment = comementDTO.toEntity();
         commentRepository.save(comment);
 
+    }
+    public List<Map<String, String>> getAllBoards() {
+        List<Object []> objects = boardRepository.findBoardsWithImageCntAndCommentCnt();
+        List<Map<String, String>> arly = new ArrayList<>();
+        objects.stream().forEach(object -> {
+            Map<String, String> mp = new HashMap<>();
+            mp.put("id", (String)object[0]);
+            mp.put("writer_id", (String)object[1]);
+            mp.put("created_date_time", (String)object[2]);
+            mp.put("content", (String)object[3]);
+            mp.put("image_cnt", (String)object[4]);
+            mp.put("comment_cnt", (String)object[5]);
+            arly.add(mp);
+        });
+        return arly;
     }
 }
